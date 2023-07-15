@@ -4,7 +4,7 @@ import emoji
 import datetime
 
 #自分のBotのアクセストークン
-token = "MTEyODU2Mzc4MDMyMjg1NzAyMA.GLkc8I.R1TQljSbtEnU8t6C_SlVbNqPtHKlIDwpkb3TWc"
+token = "MTEyODU2Mzc4MDMyMjg1NzAyMA.GStlip.r5_r7TtkxT2rQANDS0GE21tORsB-e1QTvZlgMg"
 #接続に必要なクライアントを作成
 client = discord.Client(intents=discord.Intents.all())
 
