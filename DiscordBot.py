@@ -25,7 +25,6 @@ guild_id_pair = int(os.getenv("guild_id_pair")) #2人用サーバー
 print_message = False
 
 
-
 #起動時に動作する処理
 @client.event
 async def on_ready():
@@ -99,8 +98,8 @@ async def on_message(message):
       for vc in voice_channels:
         print(vc)
         for member in vc.members:
-          print(f"{member}を退出させました")
           await member.move_to(None) #move_to(None)で切断
+          print(f"{member}を退出させました")
     
   #オウム返し
   """
