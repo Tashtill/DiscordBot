@@ -16,7 +16,9 @@ client = discord.Client(intents=discord.Intents.all())
 #各サーバーやチャンネルのID
 guild_id_personnal = 1089016738202521620  #個人サーバー
 channel_id_bot_notice = 1128588157831626774  #個人サーバー,Bot通知チャンネル
+channel_id_vc_general = 1089016738701660183 #個人サーバー,一般vc
 guild_id_lab_room = 867618841428099102  #らぼべやサーバー
+
 
 #受信メッセージをターミナルにprintする機能のオンオフ
 print_message = False
@@ -71,8 +73,27 @@ async def on_message(message):
   if "おはよ" in message.content:
     await message.channel.send("おはようございます。良い一日を。")
 
-  #「/close_VC」と発言したら全メンバーをボイスチャットから退出させる
-  
+  #「/close_vc」と発言したら全メンバーをボイスチャットから退出させる
+  if "/close_vc" in message.content:
+    
+    if message.content == "/close_vc_lab":
+      guild = client.get_guild(guild_id_lab_room)
+    elif message.content == "/close_vc_per":
+      guild = client.get_guild(guild_id_personnal)
+    else:
+      print("/close_vc_lab もしくは/close_vc_perを入力してください")
+      return
+
+    voice_channels = guild.voice_channels
+    for vc in voice_channels:
+      print(vc)
+      for member in vc.members:
+        print(f"{member}を退出させました")
+        await member.move_to(None) #move_to(None)で切断
+        
+
+
+
     
   #オウム返し
   """
