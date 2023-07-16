@@ -70,6 +70,9 @@ async def on_message(message):
   #「おはよ」の文字列があると挨拶する
   if "おはよ" in message.content:
     await message.channel.send("おはようございます。良い一日を。")
+
+  #「/close_VC」と発言したら全メンバーをボイスチャットから退出させる
+  
     
   #オウム返し
   """
