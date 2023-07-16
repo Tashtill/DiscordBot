@@ -10,7 +10,6 @@ import datetime
 #自分のBotのアクセストークンを取得
 load_dotenv()
 token = os.getenv("DiscordBot_token")
-token = "MTEyODU2Mzc4MDMyMjg1NzAyMA.GStlip.r5_r7TtkxT2rQANDS0GE21tORsB-e1QTvZlgMg"
 #接続に必要なクライアントを作成
 client = discord.Client(intents=discord.Intents.all())
 
