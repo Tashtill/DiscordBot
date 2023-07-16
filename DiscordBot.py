@@ -64,9 +64,8 @@ async def on_message(message):
   demojized_message = emoji.demojize(
     message.content)
   if ":pile_of_poo:" in demojized_message:
-    if message.guild.id != guild_id_lab_room:  #らぼべやでのみ動作
-      return
-    await message.channel.send("(っ'-')╮=͟͟͞͞  :roll_of_paper:")
+    if message.guild.id == guild_id_lab_room:  #らぼべやでのみ動作
+     await message.channel.send("(っ'-')╮=͟͟͞͞  :roll_of_paper:")
 
   #「うんち」の文字列があったら💩のリアクションをつける
   emoji_poop = "💩"
@@ -88,19 +87,20 @@ async def on_message(message):
   if "/close_vc" in message.content:
     
     if message.content == "/close_vc_lab":
-      guild = client.get_guild(guild_id_lab_room)
+      close_guild = client.get_guild(guild_id_lab_room)
     elif message.content == "/close_vc_p":
-      guild = client.get_guild(guild_id_pair)
+      close_guild = client.get_guild(guild_id_pair)
     else:
+      close_guild = None
       print("/close_vc_lab もしくは/close_vc_perを入力してください")
-      return
-
-    voice_channels = guild.voice_channels
-    for vc in voice_channels:
-      print(vc)
-      for member in vc.members:
-        print(f"{member}を退出させました")
-        await member.move_to(None) #move_to(None)で切断
+      
+    if close_guild != None:
+      voice_channels = close_guild.voice_channels
+      for vc in voice_channels:
+        print(vc)
+        for member in vc.members:
+          print(f"{member}を退出させました")
+          await member.move_to(None) #move_to(None)で切断
         
 
 
@@ -108,10 +108,9 @@ async def on_message(message):
     
   #オウム返し
   """
-  if message.guild.id != guild_id_personnal: #個人サーバーでのみ動作
-      return
-  await message.channel.send(message.content)
-  print(message.content)
+  if message.guild.id == guild_id_personnal: #個人サーバーでのみ動作
+    await message.channel.send(message.content)
+    print(message.content)
   """
 
 
