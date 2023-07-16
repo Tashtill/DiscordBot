@@ -82,11 +82,9 @@ async def on_message(message):
     if flg_ohayo:
       await message.channel.send("おはようございます。良い一日を。")
 
-
   #「/close_vc」と発言したら全メンバーをボイスチャットから退出させる
-  if "/close_vc" in message.content:
-    close_guild = client.get_guild(message.guild.id)
-    voice_channels = close_guild.voice_channels
+  if message.content == "/close_vc":
+    voice_channels = message.guild.voice_channels
     for vc in voice_channels:
       print(vc)
       for member in vc.members:
@@ -94,20 +92,15 @@ async def on_message(message):
         await member.move_to(None) #move_to(None)で切断
 
   #「/おやすみ」と発言したらペアサーバーの全員を退出させる
+  #ペアサーバーでのみ機能する
   if message.content == "/おやすみ":
-    if message.guild.id == guild_id_pair:
-      close_guild = client.get_guild(guild_id_pair)
-      voice_channels = close_guild.voice_channels
+    if message.guild.id == guild_id_pair: 
+      voice_channels = message.guild.voice_channels
       for vc in voice_channels:
         print(vc)
         for member in vc.members:
           print(f"{member}を退出させました")
           await member.move_to(None) #move_to(None)で切断
-
-        
-
-
-
     
   #オウム返し
   """
