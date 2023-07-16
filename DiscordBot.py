@@ -40,6 +40,9 @@ async def on_ready():
 @client.event
 async def on_message(message):
 
+  #各種フラグの初期化
+  flg_ohayo = True
+
   #メッセージ受信者がbotの場合無視する
   if message.author.bot:
     return
@@ -69,10 +72,17 @@ async def on_message(message):
   emoji_poop = "💩"
   if "うんち" in message.content:
     await message.add_reaction(emoji_poop)
+    
+    if "おはようんち" in message.content:
+      if random.choice([1,2,3]) == 1:
+        flg_ohayo = False
+        await message.channel.send("あんまり外でそういうこと言っちゃだめだよ")
 
   #「おはよ」の文字列があると挨拶する
   if "おはよ" in message.content:
-    await message.channel.send("おはようございます。良い一日を。")
+    if flg_ohayo:
+      await message.channel.send("おはようございます。良い一日を。")
+
 
   #「/close_vc」と発言したら全メンバーをボイスチャットから退出させる
   if "/close_vc" in message.content:
