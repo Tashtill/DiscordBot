@@ -14,11 +14,11 @@ token = os.getenv("DiscordBot_token")
 client = discord.Client(intents=discord.Intents.all())
 
 #各サーバーやチャンネルのID
-guild_id_personnal = 1089016738202521620  #個人サーバー
-channel_id_bot_notice = 1128588157831626774  #個人サーバー,Bot通知チャンネル
-channel_id_vc_general = 1089016738701660183 #個人サーバー,一般vc
-guild_id_lab_room = 867618841428099102  #らぼべやサーバー
-guild_id_pair = 1106193583712784454 #2人用サーバー
+guild_id_personnal = int(os.getenv("guild_id_personnal")) #個人サーバー
+channel_id_bot_notice = int(os.getenv("channel_id_bot_notice"))  #個人サーバー,Bot通知チャンネル
+channel_id_vc_general = int(os.getenv("channel_id_vc_general")) #個人サーバー,一般vc
+guild_id_lab_room = int(os.getenv("guild_id_lab_room")) #らぼべやサーバー
+guild_id_pair = int(os.getenv("guild_id_pair")) #2人用サーバー
 
 
 #受信メッセージをターミナルにprintする機能のオンオフ
