@@ -85,22 +85,25 @@ async def on_message(message):
 
   #「/close_vc」と発言したら全メンバーをボイスチャットから退出させる
   if "/close_vc" in message.content:
-    
-    if message.content == "/close_vc_lab":
-      close_guild = client.get_guild(guild_id_lab_room)
-    elif message.content == "/close_vc_p":
+    close_guild = client.get_guild(message.guild.id)
+    voice_channels = close_guild.voice_channels
+    for vc in voice_channels:
+      print(vc)
+      for member in vc.members:
+        print(f"{member}を退出させました")
+        await member.move_to(None) #move_to(None)で切断
+
+  #「/おやすみ」と発言したらペアサーバーの全員を退出させる
+  if message.content == "/おやすみ":
+    if message.guild.id == guild_id_pair:
       close_guild = client.get_guild(guild_id_pair)
-    else:
-      close_guild = None
-      print("/close_vc_lab もしくは/close_vc_perを入力してください")
-      
-    if close_guild != None:
       voice_channels = close_guild.voice_channels
       for vc in voice_channels:
         print(vc)
         for member in vc.members:
           print(f"{member}を退出させました")
           await member.move_to(None) #move_to(None)で切断
+
         
 
 
