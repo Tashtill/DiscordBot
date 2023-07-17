@@ -5,6 +5,7 @@ import random
 import emoji
 import datetime
 
+#gitlens revert test
 
 
 #自分のBotのアクセストークンを取得
