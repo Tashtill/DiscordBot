@@ -20,9 +20,20 @@ channel_id_vc_general = int(os.getenv("channel_id_vc_general")) #個人サーバ
 guild_id_lab_room = int(os.getenv("guild_id_lab_room")) #らぼべやサーバー
 guild_id_pair = int(os.getenv("guild_id_pair")) #2人用サーバー
 
-
 #受信メッセージをターミナルにprintする機能のオンオフ
 print_message = False
+
+
+#イベント内で使用する関数
+#サーバー内のVCから全メンバーを退出させる
+async def close_vc(message):
+  voice_channels = message.guild.voice_channels
+  for vc in voice_channels:
+    print(vc)
+    for member in vc.members:
+      await member.move_to(None) #move_to(None)で切断
+      print(f"{member}を退出させました")
+
 
 
 #起動時に動作する処理
@@ -83,23 +94,13 @@ async def on_message(message):
 
   #「/close_vc」と発言したら全メンバーをボイスチャットから退出させる
   if message.content == "/close_vc":
-    voice_channels = message.guild.voice_channels
-    for vc in voice_channels:
-      print(vc)
-      for member in vc.members:
-        print(f"{member}を退出させました")
-        await member.move_to(None) #move_to(None)で切断
+    await close_vc(message)
 
   #「/おやすみ」と発言したらペアサーバーの全員を退出させる
   #ペアサーバーでのみ機能する
   if message.content == "/おやすみ":
     if message.guild.id == guild_id_pair: 
-      voice_channels = message.guild.voice_channels
-      for vc in voice_channels:
-        print(vc)
-        for member in vc.members:
-          await member.move_to(None) #move_to(None)で切断
-          print(f"{member}を退出させました")
+      await close_vc(message)
     
   #オウム返し
   """
@@ -107,8 +108,6 @@ async def on_message(message):
     await message.channel.send(message.content)
     print(message.content)
   """
-
-
 
 
 
