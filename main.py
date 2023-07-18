@@ -12,6 +12,8 @@ load_dotenv()
 token = os.getenv("DiscordBot_token")
 #接続に必要なクライアントを作成
 client = discord.Client(intents=discord.Intents.all())
+#スラッシュコマンドの情報をもつコンテナを作成
+tree = discord.app_commands.CommandTree(client)
 
 #各サーバーやチャンネルのID
 guild_id_personnal = int(os.getenv("guild_id_personnal")) #個人サーバー
@@ -26,8 +28,8 @@ print_message = False
 
 #イベント内で使用する関数
 #サーバー内のVCから全メンバーを退出させる
-async def close_vc(message):
-  voice_channels = message.guild.voice_channels
+async def close_vc(guild):
+  voice_channels = guild.voice_channels
   for vc in voice_channels:
     print(vc)
     for member in vc.members:
@@ -44,6 +46,8 @@ async def on_ready():
   channel_bot_notice = client.get_channel(channel_id_bot_notice)
   await channel_bot_notice.send(f"オンラインになりました\n現在時刻は{dt_now_jst}です")
 
+  await tree.sync() #スラッシュコマンドの同期
+
 
 
 #メッセージ受信時に動作する処理群
@@ -58,14 +62,9 @@ async def on_message(message):
   if print_message:
     print("受信メッセージ:" + message.content)
 
-  #「/neko」と発言したら「にゃーん」を返す
-  if message.content == "/neko":
+  #「にゃーん」と発言したら「にゃーん」を返す
+  if message.content == "にゃーん":
     await message.channel.send("にゃーん")
-
-  #「/roll」と発言したらサイコロを振る
-  if message.content == "/roll":
-    number = random.randint(1, 6)
-    await message.channel.send(number)
 
   #💩の絵文字が入力されたら、トイレットペーパーを投げる
   demojized_message = emoji.demojize(
@@ -89,15 +88,11 @@ async def on_message(message):
     if flg_greet:
       await message.channel.send("おはようございます。良い一日を。")
 
-  #「/close_vc」と発言したら全メンバーをボイスチャットから退出させる
-  if message.content == "/close_vc":
-    await close_vc(message)
-
   #「/おやすみ」と発言したらペアサーバーの全員を退出させる
   #ペアサーバーでのみ機能する
   if message.content == "/おやすみ":
     if message.guild.id == guild_id_pair: 
-      await close_vc(message)
+      await close_vc(message.guild)
     
   #オウム返し
   """
@@ -105,6 +100,26 @@ async def on_message(message):
     await message.channel.send(message.content)
     print(message.content)
   """
+
+
+
+#スラッシュコマンド
+#テスト
+@tree.command(name="test", description="スラッシュコマンドのテスト")
+async def test(interaction:discord.Interaction):
+  await interaction.response.send_message("これはスラッシュコマンドのテストです")
+
+#ボイスチャットの解散
+@tree.command(name="close_vc", description="VCから全員を退出させます")
+async def close_voice_chat(interaction:discord.Interaction):
+  await close_vc(interaction.guild)
+  await interaction.response.send_message("ボイスチャットを解散しました")
+
+#6面ダイスを振る
+@tree.command(name="roll", description="サイコロを振ります")
+async def roll(interaction:discord.Interaction):
+  number = random.randint(1,6)
+  await interaction.response.send_message(f"{number}の目が出ました")
 
 
 
