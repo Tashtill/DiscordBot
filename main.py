@@ -105,10 +105,10 @@ async def on_message(message):
 
 #スラッシュコマンド
 
+@bot.command(description="あいさつは、だいじ")
 async def hello(ctx):
   await ctx.reply("こんにちは")
 
-"""
 #ボイスチャットの解散
 @bot.command(description="サーバー内のボイスチャットを解散します")
 async def close_voice_chat(ctx):
@@ -120,7 +120,6 @@ async def close_voice_chat(ctx):
 async def roll(ctx):
   number = random.randint(1,6)
   await ctx.send(f"{number}の目が出ました")
-"""
 
 
 
