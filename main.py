@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 import discord
+from discord.ext import commands
 import random
 import emoji
 import datetime
@@ -10,10 +11,9 @@ import datetime
 #自分のBotのアクセストークンを取得
 load_dotenv()
 token = os.getenv("DiscordBot_token")
-#接続に必要なクライアントを作成
-client = discord.Client(intents=discord.Intents.all())
-#スラッシュコマンドの情報をもつコンテナを作成
-tree = discord.app_commands.CommandTree(client)
+#ボットのインスタンスを作成
+bot = commands.Bot(command_prefix="/", intents=discord.Intents.all())
+
 
 #各サーバーやチャンネルのID
 guild_id_personnal = int(os.getenv("guild_id_personnal")) #個人サーバー
@@ -39,19 +39,18 @@ async def close_vc(guild):
 
 
 #起動時に動作する処理
-@client.event
+@bot.event
 async def on_ready():
-  print(f"We have logged in as {client.user}")
+  print(f"We have logged in as {bot.user}")
   dt_now_jst = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
-  channel_bot_notice = client.get_channel(channel_id_bot_notice)
+  channel_bot_notice = bot.get_channel(channel_id_bot_notice)
   await channel_bot_notice.send(f"オンラインになりました\n現在時刻は{dt_now_jst}です")
 
-  await tree.sync() #スラッシュコマンドの同期
 
 
 
 #メッセージ受信時に動作する処理群
-@client.event
+@bot.event
 async def on_message(message):
 
   #メッセージ受信者がbotの場合無視する
@@ -101,28 +100,29 @@ async def on_message(message):
     print(message.content)
   """
 
+  await bot.process_commands(message)
 
-"""
+
+
 #スラッシュコマンド
-#テスト
-@tree.command(name="test", description="スラッシュコマンドのテスト")
-async def test(interaction:discord.Interaction):
-  await interaction.response.send_message("これはスラッシュコマンドのテストです")
+
+@bot.command(description="あいさつは、だいじ")
+async def hello(ctx):
+  await ctx.reply("こんにちは")
 
 #ボイスチャットの解散
-@tree.command(name="close_vc", description="VCから全員を退出させます")
-async def close_voice_chat(interaction:discord.Interaction):
-  await close_vc(interaction.guild)
-  await interaction.response.send_message("ボイスチャットを解散しました")
+@bot.command(description="サーバー内のボイスチャットを解散します")
+async def close_voice_chat(ctx):
+  await close_vc(ctx.guild)
+  await ctx.send("ボイスチャットを解散しました")
 
 #6面ダイスを振る
-@tree.command(name="roll", description="サイコロを振ります")
-async def roll(interaction:discord.Interaction):
+@bot.command(description="サイコロをふります")
+async def roll(ctx):
   number = random.randint(1,6)
-  await interaction.response.send_message(f"{number}の目が出ました")
-"""
+  await ctx.send(f"{number}の目が出ました")
 
 
 
 #Botの起動とDiscordサーバーへの接続
-client.run(token)
+bot.run(token)
