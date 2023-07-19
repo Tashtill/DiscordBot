@@ -46,7 +46,6 @@ async def on_ready():
   channel_bot_notice = bot.get_channel(channel_id_bot_notice)
   await channel_bot_notice.send(f"オンラインになりました\n現在時刻は{dt_now_jst}です")
 
-  bot.tree.sync()
 
 
 
@@ -101,25 +100,27 @@ async def on_message(message):
     print(message.content)
   """
 
+  await bot.process_commands(message)
 
 
 #スラッシュコマンド
-#テスト
-@bot.command(description="あいさつは、だいじ")
-async def hello(ctx):
-  await ctx.send("Hello, World!")
 
+async def hello(ctx):
+  await ctx.reply("こんにちは")
+
+"""
 #ボイスチャットの解散
-@bot.command()
-async def close_voice_chat(interaction:discord.Interaction):
-  await close_vc(interaction.guild)
-  await interaction.response.send_message("ボイスチャットを解散しました")
+@bot.command(description="サーバー内のボイスチャットを解散します")
+async def close_voice_chat(ctx):
+  await close_vc(ctx.guild)
+  await ctx.send("ボイスチャットを解散しました")
 
 #6面ダイスを振る
-@bot.command()
-async def roll(interaction:discord.Interaction):
+@bot.command(description="サイコロをふります")
+async def roll(ctx):
   number = random.randint(1,6)
-  await interaction.response.send_message(f"{number}の目が出ました")
+  await ctx.send(f"{number}の目が出ました")
+"""
 
 
 
