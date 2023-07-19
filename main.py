@@ -102,7 +102,7 @@ async def on_message(message):
   """
 
 
-
+"""
 #スラッシュコマンド
 #テスト
 @tree.command(name="test", description="スラッシュコマンドのテスト")
@@ -120,6 +120,7 @@ async def close_voice_chat(interaction:discord.Interaction):
 async def roll(interaction:discord.Interaction):
   number = random.randint(1,6)
   await interaction.response.send_message(f"{number}の目が出ました")
+"""
 
 
 
