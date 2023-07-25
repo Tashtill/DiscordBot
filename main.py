@@ -49,21 +49,20 @@ async def on_ready():
 @bot.event
 async def on_message(message):
 
-  #メッセージ送信者がBot自身の場合
+  #メッセージ送信者がBot自身の場合、出力したメッセージをターミナルにprintし、以降の処理をスキップ
   if message.author == bot.user:
     print(f"出力メッセージ:{message.content}")
     return
 
-  #受信メッセージをターミナルで確認
-  print(f"受信メッセージ:{message.content}")
+  #受信メッセージをターミナルで確認。絵文字を処理できるようにdemojizeしておく
+  print(f"{message.author} > {emoji.demojize(message.content)}")
 
   #「にゃーん」と発言したら「にゃーん」を返す
   if message.content == "にゃーん":
     await message.channel.send("にゃーん")
 
   #💩の絵文字が入力されたら、トイレットペーパーを投げる
-  demojized_message = emoji.demojize(
-    message.content)
+  demojized_message = emoji.demojize(message.content)
   if ":pile_of_poo:" in demojized_message:
     if message.guild.id == guild_id_lab_room:  #らぼべやでのみ動作
      await message.channel.send("(っ'-')╮=͟͟͞͞  :roll_of_paper:")
@@ -83,19 +82,13 @@ async def on_message(message):
     if flg_greet:
       await message.channel.send("おはようございます。良い一日を。")
 
-  #「/おやすみ」と発言したらペアサーバーの全員を退出させる
+  #「？おやすみ」と発言したらペアサーバーの全員を退出させる
   #ペアサーバーでのみ機能する
   if message.content == "？おやすみ":
     if message.guild.id == guild_id_pair: 
       await close_vc(message.guild)
-    
-  #オウム返し
-  """
-  if message.guild.id == guild_id_personnal: #個人サーバーでのみ動作
-    await message.channel.send(message.content)
-    print(message.content)
-  """
 
+  #スラッシュコマンドの処理に移行
   await bot.process_commands(message)
 
 
