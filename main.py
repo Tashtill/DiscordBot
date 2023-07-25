@@ -41,9 +41,10 @@ async def close_vc(guild):
 @bot.event
 async def on_ready():
   print(f"We have logged in as {bot.user}")
-  dt_now_jst = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
-  channel_bot_notice = bot.get_channel(channel_id_bot_notice)
-  await channel_bot_notice.send(f"オンラインになりました\n現在時刻は{dt_now_jst}です")
+  await bot.tree.sync() #コマンドを同期
+  #dt_now_jst = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
+  #channel_bot_notice = bot.get_channel(channel_id_bot_notice)
+  #await channel_bot_notice.send(f"オンラインになりました\n現在時刻は{dt_now_jst}です")
 
 
 
@@ -57,7 +58,7 @@ async def on_message(message):
     print(f"[{message.guild}] OUTPUT : {message.content}")
     return
 
-  #受信メッセージをターミナルで確認。絵文字を処理できるようにdemojizeしておく
+  #受信メッセージをターミナルで確認。demojizeで絵文字の文字化けを防ぐ
   print(f"[{message.guild}] {message.author} > {emoji.demojize(message.content)}")
 
   #「にゃーん」と発言したら「にゃーん」を返す
@@ -90,6 +91,13 @@ async def on_message(message):
   if message.content == "？おやすみ":
     if message.guild.id == guild_id_pair: 
      await close_vc(message.guild)
+
+  if message.content == "コマンド表示":
+    print(bot.tree.get_commands())
+
+  if message.content == "コマンドリスト":
+    for command in bot.commands:
+      print(command)
 
   #スラッシュコマンドの処理に移行
   await bot.process_commands(message)
