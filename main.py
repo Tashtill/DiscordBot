@@ -22,10 +22,6 @@ channel_id_vc_general = int(os.getenv("channel_id_vc_general")) #個人サーバ
 guild_id_lab_room = int(os.getenv("guild_id_lab_room")) #らぼべやサーバー
 guild_id_pair = int(os.getenv("guild_id_pair")) #2人用サーバー
 
-#受信メッセージをターミナルにprintする機能のオンオフ
-print_message = False
-
-
 #イベント内で使用する関数
 #サーバー内のVCから全メンバーを退出させる
 async def close_vc(guild):
@@ -58,8 +54,7 @@ async def on_message(message):
     return
 
   #受信メッセージをターミナルで確認
-  if print_message:
-    print("受信メッセージ:" + message.content)
+  print("受信メッセージ:" + message.content)
 
   #「にゃーん」と発言したら「にゃーん」を返す
   if message.content == "にゃーん":
@@ -89,7 +84,7 @@ async def on_message(message):
 
   #「/おやすみ」と発言したらペアサーバーの全員を退出させる
   #ペアサーバーでのみ機能する
-  if message.content == "/おやすみ":
+  if message.content == "？おやすみ":
     if message.guild.id == guild_id_pair: 
       await close_vc(message.guild)
     
