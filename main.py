@@ -12,7 +12,9 @@ import datetime
 load_dotenv()
 token = os.getenv("DiscordBot_token")
 #ボットのインスタンスを作成
-bot = commands.Bot(command_prefix="/", intents=discord.Intents.all())
+description = """このボットで使用可能なコマンドは以下のとおりです。
+コマンドを使用する際は/helpのように頭に/をつけてください。"""
+bot = commands.Bot(command_prefix="/", description = description, intents=discord.Intents.all())
 
 
 #各サーバーやチャンネルのID
@@ -22,15 +24,16 @@ channel_id_vc_general = int(os.getenv("channel_id_vc_general")) #個人サーバ
 guild_id_lab_room = int(os.getenv("guild_id_lab_room")) #らぼべやサーバー
 guild_id_pair = int(os.getenv("guild_id_pair")) #2人用サーバー
 
+
+
 #イベント内で使用する関数
 #サーバー内のVCから全メンバーを退出させる
 async def close_vc(guild):
   voice_channels = guild.voice_channels
   for vc in voice_channels:
-    print(vc)
     for member in vc.members:
       await member.move_to(None) #move_to(None)で切断
-      print(f"{member}を退出させました")
+      print(f"{vc}から{member}を退出させました")
 
 
 
@@ -51,11 +54,11 @@ async def on_message(message):
 
   #メッセージ送信者がBot自身の場合、出力したメッセージをターミナルにprintし、以降の処理をスキップ
   if message.author == bot.user:
-    print(f"出力メッセージ:{message.content}")
+    print(f"[{message.guild}] OUTPUT : {message.content}")
     return
 
   #受信メッセージをターミナルで確認。絵文字を処理できるようにdemojizeしておく
-  print(f"{message.author} > {emoji.demojize(message.content)}")
+  print(f"[{message.guild}] {message.author} > {emoji.demojize(message.content)}")
 
   #「にゃーん」と発言したら「にゃーん」を返す
   if message.content == "にゃーん":
@@ -86,7 +89,7 @@ async def on_message(message):
   #ペアサーバーでのみ機能する
   if message.content == "？おやすみ":
     if message.guild.id == guild_id_pair: 
-      await close_vc(message.guild)
+     await close_vc(message.guild)
 
   #スラッシュコマンドの処理に移行
   await bot.process_commands(message)
@@ -95,19 +98,22 @@ async def on_message(message):
 
 #スラッシュコマンド
 
-@bot.command(description="あいさつは、だいじ")
+@bot.command()
 async def hello(ctx):
+  """あいさつは、だいじ"""
   await ctx.reply("こんにちは")
 
 #ボイスチャットの解散
-@bot.command(description="サーバー内のボイスチャットを解散します")
+@bot.command()
 async def close_voice_chat(ctx):
+  """サーバー内のボイスチャットを解散します"""
   await close_vc(ctx.guild)
   await ctx.send("ボイスチャットを解散しました")
 
 #6面ダイスを振る
-@bot.command(description="サイコロをふります")
+@bot.command()
 async def roll(ctx):
+  """サイコロをふります"""
   number = random.randint(1,6)
   await ctx.send(f"{number}の目が出ました")
 

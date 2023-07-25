@@ -1,4 +1,5 @@
 # This example requires the 'members' and 'message_content' privileged intents to function.
+# M's Botのトークンを設定済み
 
 import discord
 from discord.ext import commands
