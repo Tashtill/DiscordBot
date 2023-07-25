@@ -49,12 +49,13 @@ async def on_ready():
 @bot.event
 async def on_message(message):
 
-  #メッセージ受信者がbotの場合無視する
-  if message.author.bot:
+  #メッセージ送信者がBot自身の場合
+  if message.author == bot.user:
+    print(f"出力メッセージ:{message.content}")
     return
 
   #受信メッセージをターミナルで確認
-  print("受信メッセージ:" + message.content)
+  print(f"受信メッセージ:{message.content}")
 
   #「にゃーん」と発言したら「にゃーん」を返す
   if message.content == "にゃーん":
