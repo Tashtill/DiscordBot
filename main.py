@@ -5,6 +5,7 @@ from discord.ext import commands
 import random
 import emoji
 import datetime
+import glob
 
 
 
@@ -125,7 +126,8 @@ async def roll(ctx):
 @bot.command()
 async def animal(ctx):
   """動物の画像を送ります"""
-  img_path = r"animals\541263C9-B3CB-412B-89DE-C171B5D0912A.jpg"
+  img_list = glob.glob(r"animals\*.jpg")
+  img_path = random.choice(img_list)
   await ctx.send(file = discord.File(img_path))
 
 
