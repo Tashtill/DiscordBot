@@ -122,6 +122,10 @@ async def roll(ctx):
   number = random.randint(1,6)
   await ctx.send(f"{number}の目が出ました")
 
+@bot.command()
+async def animal(ctx):
+  img_path = r"animals\541263C9-B3CB-412B-89DE-C171B5D0912A.jpg"
+  await ctx.send(file = discord.File(img_path))
 
 
 #Botの起動とDiscordサーバーへの接続
