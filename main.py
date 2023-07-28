@@ -42,9 +42,6 @@ async def close_vc(guild):
 async def on_ready():
   print(f"We have logged in as {bot.user}")
   await bot.tree.sync() #コマンドを同期
-  #dt_now_jst = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
-  #channel_bot_notice = bot.get_channel(channel_id_bot_notice)
-  #await channel_bot_notice.send(f"オンラインになりました\n現在時刻は{dt_now_jst}です")
 
 
 
