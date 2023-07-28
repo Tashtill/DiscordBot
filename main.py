@@ -59,8 +59,8 @@ async def on_message(message):
   #受信メッセージをターミナルで確認。demojizeで絵文字の文字化けを防ぐ
   print(f"[{message.guild}] {message.author} > {emoji.demojize(message.content)}")
 
-  #「にゃーん」と発言したら「にゃーん」を返す
-  if message.content == "にゃーん":
+  #メッセージが「にゃん」or「にゃーん」の場合「にゃーん」を返す
+  if "にゃーん" in message.content or "にゃん" in message.content:
     await message.channel.send("にゃーん")
 
   #💩の絵文字が入力されたら、トイレットペーパーを投げる
@@ -126,7 +126,7 @@ async def roll(ctx):
 @bot.command()
 async def animal(ctx):
   """動物の画像を送ります"""
-  img_list = glob.glob(r"animals\*.jpg")
+  img_list = glob.glob(r"C:\Users\mhrt2\work\DiscordBot\animals\*.jpg")
   img_path = random.choice(img_list)
   await ctx.send(file = discord.File(img_path))
 
