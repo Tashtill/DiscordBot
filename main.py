@@ -126,7 +126,9 @@ async def roll(ctx):
 @bot.command()
 async def animal(ctx):
   """動物の画像を送ります"""
-  img_list = glob.glob(r"C:\Users\mhrt2\work\DiscordBot\animals\*.jpg")
+  jpg_img_list = glob.glob(r"C:\Users\mhrt2\work\DiscordBot\animals\*.jpg")
+  png_img_list = glob.glob(r"C:\Users\mhrt2\work\DiscordBot\animals\*.png")
+  img_list = jpg_img_list + png_img_list
   img_path = random.choice(img_list)
   await ctx.send(file = discord.File(img_path))
 
