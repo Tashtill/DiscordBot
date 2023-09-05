@@ -92,6 +92,7 @@ async def on_message(message):
     if message.guild.id == guild_id_pair: 
      await close_vc(message.guild)
 
+  #スラッシュコマンド対応用の確認項目
   if message.content == "コマンド表示":
     print(bot.tree.get_commands())
 
