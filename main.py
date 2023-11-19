@@ -6,6 +6,7 @@ import random
 import emoji
 import datetime
 import glob
+import time
 
 
 
@@ -113,6 +114,15 @@ async def hello(ctx):
 @bot.command()
 async def close(ctx):
   """サーバー内のボイスチャットを解散します"""
+  await close_vc(ctx.guild)
+  await ctx.send("ボイスチャットを解散しました")
+
+@bot.command()
+async def closeIn(ctx, arg):
+  """x分後にボイスチャットを解散します"""
+  sec = int(arg)
+  min = sec*60
+  time.sleep(min)
   await close_vc(ctx.guild)
   await ctx.send("ボイスチャットを解散しました")
 
