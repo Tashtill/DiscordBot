@@ -19,6 +19,14 @@ description = """このボットで使用可能なコマンドは以下のとお
 bot = commands.Bot(command_prefix="/", description = description, intents=discord.Intents.all())
 
 
+#起動時に動作する処理
+@bot.event
+async def on_ready():
+  print(f"We have logged in as {bot.user}")
+  await bot.tree.sync() #コマンドを同期
+
+
+
 #各サーバーやチャンネルのID
 guild_id_personnal = int(os.getenv("guild_id_personnal")) #個人サーバー
 channel_id_bot_notice = int(os.getenv("channel_id_bot_notice"))  #個人サーバー,Bot通知チャンネル
@@ -36,15 +44,6 @@ async def close_vc(guild):
     for member in vc.members:
       await member.move_to(None) #move_to(None)で切断
       print(f"{vc}から{member}を退出させました")
-
-
-
-#起動時に動作する処理
-@bot.event
-async def on_ready():
-  print(f"We have logged in as {bot.user}")
-  await bot.tree.sync() #コマンドを同期
-
 
 
 
@@ -105,7 +104,6 @@ async def on_message(message):
 
 
 #スラッシュコマンド
-
 @bot.command()
 async def hello(ctx):
   """あいさつは、だいじ"""
@@ -120,6 +118,7 @@ async def close(ctx):
 
 timer_counter = 0
 
+#ボイスチャットの解散タイマー
 @bot.command()
 async def closeIn(ctx, arg):
   """x分後にボイスチャットを解散します"""
@@ -138,14 +137,13 @@ async def closeIn(ctx, arg):
       print(f"{arg}分前のタイマーは停止もしくはリセットされています")
   except ValueError:
     await ctx.send("数値は整数で入力してください")
-
+#ボイスチャットのタイマー停止
 @bot.command()
 async def stop(ctx):
   """タイマーを停止します"""
   global timer_counter
   timer_counter += 1
   await ctx.send("ボイスチャット停止のタイマーを停止しました")
-
 
 #6面ダイスを振る
 @bot.command()
@@ -154,6 +152,7 @@ async def roll(ctx):
   number = random.randint(1,6)
   await ctx.send(f"{number}の目が出ました")
 
+#動物の画像を送る
 @bot.command()
 async def animal(ctx):
   """動物の画像を送ります"""
@@ -162,6 +161,7 @@ async def animal(ctx):
   img_list = jpg_img_list + png_img_list
   img_path = random.choice(img_list)
   await ctx.send(file = discord.File(img_path))
+
 
 
 #Botの起動とDiscordサーバーへの接続
