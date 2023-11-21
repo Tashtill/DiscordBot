@@ -6,7 +6,7 @@ import random
 import emoji
 import datetime
 import glob
-import time
+import asyncio
 
 
 
@@ -117,14 +117,33 @@ async def close(ctx):
   await close_vc(ctx.guild)
   await ctx.send("ボイスチャットを解散しました")
 
+timer_counter = 0
+
 @bot.command()
 async def closeIn(ctx, arg):
   """x分後にボイスチャットを解散します"""
-  sec = int(arg)
-  min = sec*60
-  time.sleep(min)
-  await close_vc(ctx.guild)
-  await ctx.send("ボイスチャットを解散しました")
+  try:
+    sec = int(arg)
+    min = sec*60
+    global timer_counter
+    timer_counter += 1 #新規タイマーの作成前もしくはタイマーストップ時にtimer_counterを書き換えてタイマーを無効化する
+    my_counter = timer_counter
+    await ctx.send(f"{arg}分後にボイスチャットを解散します")
+    await asyncio.sleep(min)
+    if my_counter == timer_counter:
+      await close_vc(ctx.guild)
+      await ctx.send("ボイスチャットを解散しました")
+    else:
+      print(f"{arg}分前のタイマーは停止もしくはリセットされています")
+  except ValueError:
+    await ctx.send("数値は整数で入力してください")
+
+@bot.command()
+async def stop(ctx):
+  global timer_counter
+  timer_counter += 1
+  await ctx.send("タイマーを停止しました")
+
 
 #6面ダイスを振る
 @bot.command()
