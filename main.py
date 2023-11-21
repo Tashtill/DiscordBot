@@ -5,6 +5,8 @@ from discord.ext import commands
 import random
 import emoji
 import datetime
+import glob
+import asyncio
 
 
 
@@ -58,8 +60,8 @@ async def on_message(message):
   #受信メッセージをターミナルで確認。demojizeで絵文字の文字化けを防ぐ
   print(f"[{message.guild}] {message.author} > {emoji.demojize(message.content)}")
 
-  #「にゃーん」と発言したら「にゃーん」を返す
-  if message.content == "にゃーん":
+  #メッセージが「にゃん」or「にゃーん」の場合「にゃーん」を返す
+  if "にゃーん" in message.content or "にゃん" in message.content:
     await message.channel.send("にゃーん")
 
   #💩の絵文字が入力されたら、トイレットペーパーを投げる
@@ -111,10 +113,38 @@ async def hello(ctx):
 
 #ボイスチャットの解散
 @bot.command()
-async def close_voice_chat(ctx):
+async def close(ctx):
   """サーバー内のボイスチャットを解散します"""
   await close_vc(ctx.guild)
   await ctx.send("ボイスチャットを解散しました")
+
+timer_counter = 0
+
+@bot.command()
+async def closeIn(ctx, arg):
+  """x分後にボイスチャットを解散します"""
+  try:
+    sec = int(arg)
+    min = sec*60
+    global timer_counter
+    timer_counter += 1 #新規タイマーの作成前もしくはタイマーストップ時にtimer_counterを書き換えてタイマーを無効化する
+    my_counter = timer_counter
+    await ctx.send(f"{arg}分後にボイスチャットを解散します")
+    await asyncio.sleep(min)
+    if my_counter == timer_counter:
+      await close_vc(ctx.guild)
+      await ctx.send("ボイスチャットを解散しました")
+    else:
+      print(f"{arg}分前のタイマーは停止もしくはリセットされています")
+  except ValueError:
+    await ctx.send("数値は整数で入力してください")
+
+@bot.command()
+async def stop(ctx):
+  global timer_counter
+  timer_counter += 1
+  await ctx.send("タイマーを停止しました")
+
 
 #6面ダイスを振る
 @bot.command()
@@ -123,6 +153,14 @@ async def roll(ctx):
   number = random.randint(1,6)
   await ctx.send(f"{number}の目が出ました")
 
+@bot.command()
+async def animal(ctx):
+  """動物の画像を送ります"""
+  jpg_img_list = glob.glob(r"C:\Users\mhrt2\work\DiscordBot\animals\*.jpg")
+  png_img_list = glob.glob(r"C:\Users\mhrt2\work\DiscordBot\animals\*.png")
+  img_list = jpg_img_list + png_img_list
+  img_path = random.choice(img_list)
+  await ctx.send(file = discord.File(img_path))
 
 
 #Botの起動とDiscordサーバーへの接続
