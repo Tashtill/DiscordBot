@@ -140,9 +140,10 @@ async def closeIn(ctx, arg):
 
 @bot.command()
 async def stop(ctx):
+  """タイマーを停止します"""
   global timer_counter
   timer_counter += 1
-  await ctx.send("タイマーを停止しました")
+  await ctx.send("ボイスチャット停止のタイマーを停止しました")
 
 
 #6面ダイスを振る
