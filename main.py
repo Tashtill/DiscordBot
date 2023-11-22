@@ -34,9 +34,11 @@ channel_id_vc_general = int(os.getenv("channel_id_vc_general")) #個人サーバ
 guild_id_lab_room = int(os.getenv("guild_id_lab_room")) #らぼべやサーバー
 guild_id_pair = int(os.getenv("guild_id_pair")) #2人用サーバー
 
+#グローバル変数
+timer_counter = 0 #稼働中のボイスチャット解散タイマーの判別に使用
 
 
-#イベント内で使用する関数
+
 #サーバー内のVCから全メンバーを退出させる
 async def close_vc(guild):
   voice_channels = guild.voice_channels
@@ -45,6 +47,50 @@ async def close_vc(guild):
       await member.move_to(None) #move_to(None)で切断
       print(f"{vc}から{member}を退出させました")
 
+#メッセージが「にゃん」or「にゃーん」の場合「にゃーん」を返す
+async def is_nyan(message):
+  if "にゃーん" in message.content or "にゃん" in message.content:
+    await message.channel.send("にゃーん")
+
+#💩の絵文字が入力されたら、トイレットペーパーを投げる
+async def is_poop(message):
+  demojized_message = emoji.demojize(message.content)
+  if ":pile_of_poo:" in demojized_message:
+    if message.guild.id == guild_id_lab_room:  #らぼべやでのみ動作
+     await message.channel.send("(っ'-')╮=͟͟͞͞  :roll_of_paper:")
+
+#「うんち」の文字列があったら💩のリアクションをつける
+async def is_emoji_poop(message):
+  emoji_poop = "💩"
+  if "うんち" in message.content:
+    await message.add_reaction(emoji_poop)
+
+#「おはよ」の文字列があると挨拶する
+async def is_good_morning(message):
+  if "おはよ" in message.content:
+    flg_greet = True
+    if "おはようんち" in message.content:
+      if random.choice([1,2,3]) == 1:
+        await message.channel.send("あんまり外でそういうこと言っちゃだめだよ")
+        flg_greet = False 
+    if flg_greet:
+      await message.channel.send("おはようございます。良い一日を。")
+
+#「？おやすみ」と発言したらペアサーバーの全員を退出させる
+#ペアサーバーでのみ機能する
+async def is_good_night(message):
+  if message.content == "？おやすみ":
+    if message.guild.id == guild_id_pair: 
+     await close_vc(message.guild)
+
+#スラッシュコマンド対応用の確認項目
+async def check_slash_commands(message):
+  if message.content == "コマンド表示":
+    print(bot.tree.get_commands())
+
+  if message.content == "コマンドリスト":
+    for command in bot.commands:
+      print(command)
 
 
 #メッセージ受信時に動作する処理群
@@ -55,48 +101,15 @@ async def on_message(message):
   if message.author == bot.user:
     print(f"[{message.guild}] OUTPUT : {message.content}")
     return
-
   #受信メッセージをターミナルで確認。demojizeで絵文字の文字化けを防ぐ
-  print(f"[{message.guild}] {message.author} > {emoji.demojize(message.content)}")
+  print(f"[{message.guild}] {message.author} > {emoji.demojize(message.content)}") 
 
-  #メッセージが「にゃん」or「にゃーん」の場合「にゃーん」を返す
-  if "にゃーん" in message.content or "にゃん" in message.content:
-    await message.channel.send("にゃーん")
-
-  #💩の絵文字が入力されたら、トイレットペーパーを投げる
-  demojized_message = emoji.demojize(message.content)
-  if ":pile_of_poo:" in demojized_message:
-    if message.guild.id == guild_id_lab_room:  #らぼべやでのみ動作
-     await message.channel.send("(っ'-')╮=͟͟͞͞  :roll_of_paper:")
-
-  #「うんち」の文字列があったら💩のリアクションをつける
-  emoji_poop = "💩"
-  if "うんち" in message.content:
-    await message.add_reaction(emoji_poop)
-    
-  #「おはよ」の文字列があると挨拶する
-  if "おはよ" in message.content:
-    flg_greet = True
-    if "おはようんち" in message.content:
-      if random.choice([1,2,3]) == 1:
-        await message.channel.send("あんまり外でそういうこと言っちゃだめだよ")
-        flg_greet = False 
-    if flg_greet:
-      await message.channel.send("おはようございます。良い一日を。")
-
-  #「？おやすみ」と発言したらペアサーバーの全員を退出させる
-  #ペアサーバーでのみ機能する
-  if message.content == "？おやすみ":
-    if message.guild.id == guild_id_pair: 
-     await close_vc(message.guild)
-
-  #スラッシュコマンド対応用の確認項目
-  if message.content == "コマンド表示":
-    print(bot.tree.get_commands())
-
-  if message.content == "コマンドリスト":
-    for command in bot.commands:
-      print(command)
+  await is_nyan(message)
+  await is_poop(message)
+  await is_emoji_poop(message)
+  await is_good_morning(message)
+  await is_good_night(message)
+  await check_slash_commands(message)
 
   #スラッシュコマンドの処理に移行
   await bot.process_commands(message)
@@ -116,7 +129,6 @@ async def close(ctx):
   await close_vc(ctx.guild)
   await ctx.send("ボイスチャットを解散しました")
 
-timer_counter = 0
 
 #ボイスチャットの解散タイマー
 @bot.command()
