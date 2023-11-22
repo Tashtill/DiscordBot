@@ -139,10 +139,10 @@ async def closeIn(ctx, arg):
     min = sec*60
     global timer_counter
     timer_counter += 1 #新規タイマーの作成前もしくはタイマーストップ時にtimer_counterを書き換えてタイマーを無効化する
-    my_counter = timer_counter
+    my_timer_counter = timer_counter
     await ctx.send(f"{arg}分後にボイスチャットを解散します")
     await asyncio.sleep(min)
-    if my_counter == timer_counter:
+    if my_timer_counter == timer_counter:
       await close_vc(ctx.guild)
       await ctx.send("ボイスチャットを解散しました")
     else:
